@@ -1,0 +1,251 @@
+---
+title: 'Project 2: Modeling, Testing, and Predicting'
+author: "SDS348"
+date: ''
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+```
+
+
+```{r}
+library(psych)
+library(dplyr)
+glimpse(sat.act)
+```
+*I am using the dataset 'sat.act' found in the package 'psych'. This dataset has 6 variables and 700 observations in total. This dataset has self reported scores that were collected as part of the Synthetic Aperture Personality Assessment. *
+
+**gender**:males = 1, females = 2
+**education**:self reported education 1 = high school ... 5 = graduate work
+**age**:age
+**ACT**:ACT composite scores may range from 1 - 36. National norms have a mean of 20.
+**SATV**:SAT Verbal scores may range from 200 - 800.
+**SATQ**:SAT Quantitative scores may range from 200 - 800
+
+```{r pressure, echo=FALSE}
+```
+
+```{R}
+#I am first going to make sure R reads gender and education as factors. I will also change gender to read the variables as male and female as opposed to 1 and 2.
+sat.act<-sat.act%>%mutate(gender=recode(gender,'1'="Male",'2'="Female"))%>%mutate_at(1:2,as.factor)
+glimpse(sat.act)
+```
+
+# 1. 
+
+```{R}
+man1<-manova(cbind(ACT,SATV,SATQ)~gender,data=sat.act)
+summary(man1)
+#get univariate ANOVAS from MANOVA ovject
+summary.aov(man1)
+#t-test
+pairwise.t.test(sat.act$SATQ, sat.act$gender,p.adj="none") 
+#Probability of at least one type I error
+1-.95^6
+#Boneferri
+0.05/6
+```
+*After performing MANOVA the p-value was 2.272e-06 which means that at least one of the variables is significant. I ran a univariate ANOVA to see which are significant and found only 'SATQ' to have a significant value of 1.332e-05. Therefore, for SATQ there is a difference between genders. After the post hos analysis was performed it is confirmed that there is a significant difference between male and female SATQ since the p-value,1.3e-05, is less than 0.05.I performed 6 tests: 1 MANOVA, 3 ANOVAS, and 2 t-tests. The probability of at least one Type I error is about 26.5%. Furthermore, male and females were found to differ significantly from each other in terms of SATQ after adjusting for multiple comparisons (bonferroni=0.05/6-0.008333333).Therefore, I reject the null hypothesis.*
+
+# 2.
+
+
+```{R}
+#Randomization test
+sat.act2<-sat.act%>%na.omit(SATQ)
+set.seed(348)
+rand_dist<-vector()
+for(i in 1:5000){
+new<-data.frame(SATQ=sample(sat.act2$SATQ),gender=sat.act2$gender)
+rand_dist[i]<-mean(new[new$gender=="Male",]$SATQ)-
+              mean(new[new$gender=="Female",]$SATQ)}
+sat.act2%>%group_by(gender)%>%summarize(means=mean(SATQ))%>%summarize(diff(means))
+mean(rand_dist< -39.87799 | rand_dist>39.87799)
+hist(rand_dist,main="",ylab=""); abline(v = -39.87799,col="red")
+```
+*The true mean difference was found to be 39.87799 and when a two tailed t-test was performed the p-value is 0. This means that there are 0 mean differences that are greater than +/-39.87799. Therefore I fail to reject the null hypothesis because it is greater than 0.05.*
+
+# 3. 
+
+
+```{R}
+#Duplicate dataset
+sat.act.linear<-sat.act
+#Linear regression model
+sat.act.linear$ACT_c<-sat.act$ACT-mean(sat.act$ACT)
+sat.act.linear$Age_c<-sat.act$age-mean(sat.act$age)
+fit<-lm(SATQ~Age_c*ACT_c,data=sat.act.linear)
+#coefficients
+summary(fit)
+```
+*The coefficient estimate for ACT_C says that there is a 14.321905 increase in SATQ for every 1-unit increase in ACT on average. The coefficient estimate for Age_c says that there is a 1.229494 decrease in SATQ for every 1-unit increase in Age on average.The proportion of the variation in the outcome that the model explains is 0.3548/35.48%.*
+```{R}
+#Plot regression
+library(ggplot2)
+resids<-fit$residuals
+fitvals<-fit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, col="red")
+library(lmtest)
+library(sandwich)
+#Check assumptions
+bptest(fit)
+#Recompute regression results
+coeftest(fit,vcov=vcovHC(fit))
+```
+*Based on just the scatter plot, it seems that homoskedasticity is met because the points are clustered close together near the line. This was confirmed by a bptest which gave a p-value greater than 0.05 (0.4176) and therefore I fail to reject the null that homoskedasticity is met. Also, looking at the graph I can check assumptions of linearity and normality which look ok and seem to be met. After doing heteroskedasticity robust standard errors, the t-statistic for 'Age_c' increased while the t-statistic for 'ACT_c' decreased. The t-statistic for the interaction,'Age_C:ACT_c' stayed very similar from -0.030 to -0.0252. The p-values stayed almost the same with a slight increase for 'Age_c' and 'Age_c:ACT_c' while 'ACT_c' stayed the exact same. Overall, 'Age_c'  and 'ACT_c' were found to be significant with p-values less than 0.05. This does not change after robust SEs.*
+
+
+###4. 
+
+```{R}
+#Bootstrapped SEs
+samp_distn<-replicate(5000,{
+  sat.act_dat<-sample_frac(sat.act.linear,replace=T)
+  fit2<-lm(SATQ~Age_c*ACT_c,data=sat.act_dat)
+  coef(fit2)
+})
+samp_distn%>%t%>%as.data.frame%>%summarize_all(sd)
+```
+*The bootstrapped standard errors are very simliar to the original and robust SEs. However, the boostrapped SEs are a bit closer to the robust SEs. For example, the bootstrapped SE for 'Age_c" is 0.4375532	, the original SE is 0.381953 and the robust SE is 0.4534983. The bootstrapped SE is greater than the original SE which means the p-value got larger as well.*
+
+# 5.
+
+
+```{R}
+sat.act.reg<-sat.act%>%mutate(y=ifelse(gender=="Male",1,0))%>%na.omit()
+head(sat.act.reg)
+#Perform logistic regression
+fit3<-glm(y~SATQ+ACT,data=sat.act.reg,family="binomial")
+exp(coef(fit3))
+```
+*Every 1-unit increase in ACT multiplies odds of the subject being male by 0.9593179. Every 1-unit increase in SATQ multiples odds of the subject being male by 1.0042733.*
+```{R}
+#confusion matrix
+probs<-predict(fit3,type="response")
+preds<-ifelse(probs>.5,1,0)
+table(prediction=preds,truth=sat.act.reg$y)%>%addmargins()
+#Accuracy
+(434+15)/687
+#Sensitivity (TPR)
+434/664
+#Specificity (TNR)
+(15/23)
+#Recall (PPV)
+434/442
+```
+*The accuracy is 0.6535662, sensitivity is 0.6536145, specificity is 0.6521739, and recall is 0.9819005. The accuracy is decent as it is not that high of number meaning the proportion of correctly classified cases is not too high. Specificity and sensitivity are in the same range while recall is high.*
+
+```{R}
+library(plotROC)
+#Plot density of logit by binary
+sat.act.reg$logit<-predict(fit3,type="link")
+sat.act.reg%>%ggplot()+geom_density(aes(logit,color=gender,fill=gender),alpha=.4)+xlab("logit(logodds)")
+#ROC curve
+ROCplot<-ggplot(sat.act.reg)+geom_roc(aes(d=sat.act.reg$y,m=probs),n.cuts=0)
+ROCplot    
+#Calculate AUC
+calc_auc(ROCplot) 
+```
+*The AUC is 0.6172546 which is not bad but it is also not that good.*
+
+```{R}
+library(glmnet)
+class_diag<-function(probs,truth){
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  prediction<-ifelse(probs>.5,1,0)
+  acc=mean(truth==prediction)
+  sens=mean(prediction[truth==1]==1)
+  spec=mean(prediction[truth==0]==0)
+  ppv=mean(truth[prediction==1]==1)
+  #CALCULATE EXACT AUC
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  TPR=cumsum(truth)/max(1,sum(truth))
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+
+#Perform 10-fold CV
+set.seed(1234)
+k=10 
+data<-sat.act.reg[sample(nrow(sat.act.reg)),] 
+folds<-cut(seq(1:nrow(sat.act.reg)),breaks=k,labels=F) 
+diags<-NULL
+for(i in 1:k){
+  
+  train<-data[folds!=i,]
+  test<-data[folds==i,]
+  truth<-test$y
+  
+  probs<-predict(fit3,newdata = test,type="response")
+  
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+
+#Average out-of-sample Accuracy, Sensitivity and Recall.  
+summarize_all(diags,mean)
+```
+*The average out-of-sample accuracy is 0.6537937, sensitivity is 0.06529012	and recall is 0.6333333. Compared to the previous accuracy, sensitivity and recall the average out-of-sample recall decreased greatly from 0.9819005 to 0.6333333. Accuracy stayed nearly the same while specificity increased by about 0.3.*
+
+# 6.
+
+
+```{R}
+sat.act2<-sat.act%>%na.omit(SATQ)
+set.seed(1234)
+y<-as.matrix(sat.act2$gender)
+x<-model.matrix(gender~.,data=sat.act2)[,-1]
+x<-scale(x)
+cv<-cv.glmnet(x,y,family="binomial")
+lasso<-glmnet(x,y,family="binomial",lambda=cv$lambda.1se)
+coef(lasso)
+```
+*The variables retained are education 2,3 and SATQ since they are found to be nonzero coefficients.*
+```{R}
+set.seed(1234)
+ k=10
+ data <- sat.act2%>%mutate(Education2=ifelse(education=="2",1,0))%>%mutate(Education3=ifelse(education=="3",1,0))%>%select(gender, Education2, Education3,SATQ)%>%sample_frac
+folds<-cut(seq(1:nrow(sat.act2)),breaks=k,labels=F) 
+diags<-NULL
+for(i in 1:k){
+train<-data[folds!=i,]
+ test<-data[folds==i,]
+ truth<-test$gender
+ fit4<-glm(gender~Education2+ Education3+SATQ,data=train,family="binomial")
+ probs<-predict(fit4,newdata=test,type="response")
+ diags<-rbind(diags,class_diag(probs,truth))
+ }
+ summarize_all(diags,mean)
+```
+*The auc is 0.6178899 which is very similar to the logistic regression from part 5 which was 0.6172546. Its accuracy is 0.6508312 which is also very similar to the logistic regression from before which was 0.653566.*
+
+

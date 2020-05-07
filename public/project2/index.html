@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Erica Santos" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 2: Modeling, Testing, and Predicting</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project2/">Project 2: Modeling, Testing, and Predicting</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<pre class="r"><code>library(psych)
+library(dplyr)
+glimpse(sat.act)</code></pre>
+<pre><code>## Observations: 700
+## Variables: 6
+## $ gender &lt;int&gt; 2, 2, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 1, 2,
+2, 2, 2, 2, 1, 2, 2, 2, 1, 1, 1, 1, 2…
+## $ education &lt;int&gt; 3, 3, 3, 4, 2, 5, 5, 3, 4, 5, 3, 4, 4,
+4, 3, 4, 3, 4, 4, 4, 2, 4, 0, 4, 4, 3, 2…
+## $ age &lt;int&gt; 19, 23, 20, 27, 33, 26, 30, 19, 23, 40, 23,
+34, 32, 41, 20, 24, 19, 24, 35, 46,…
+## $ ACT &lt;int&gt; 24, 35, 21, 26, 31, 28, 36, 22, 22, 35, 32,
+29, 21, 35, 27, 27, 33, 32, 28, 32,…
+## $ SATV &lt;int&gt; 500, 600, 480, 550, 600, 640, 610, 520,
+400, 730, 760, 710, 600, 780, 640, 640,…
+## $ SATQ &lt;int&gt; 500, 500, 470, 520, 550, 640, 500, 560,
+600, 800, 710, 600, 600, 725, 630, 590,…</code></pre>
+<p><em>I am using the dataset ‘sat.act’ found in the package ‘psych’. This dataset has 6 variables and 700 observations in total. This dataset has self reported scores that were collected as part of the Synthetic Aperture Personality Assessment. </em></p>
+<p><strong>gender</strong>:males = 1, females = 2
+<strong>education</strong>:self reported education 1 = high school … 5 = graduate work
+<strong>age</strong>:age
+<strong>ACT</strong>:ACT composite scores may range from 1 - 36. National norms have a mean of 20.
+<strong>SATV</strong>:SAT Verbal scores may range from 200 - 800.
+<strong>SATQ</strong>:SAT Quantitative scores may range from 200 - 800</p>
+<pre class="r"><code>#I am first going to make sure R reads gender and education as factors. I will also change gender to read the variables as male and female as opposed to 1 and 2.
+sat.act&lt;-sat.act%&gt;%mutate(gender=recode(gender,&#39;1&#39;=&quot;Male&quot;,&#39;2&#39;=&quot;Female&quot;))%&gt;%mutate_at(1:2,as.factor)
+glimpse(sat.act)</code></pre>
+<pre><code>## Observations: 700
+## Variables: 6
+## $ gender &lt;fct&gt; Female, Female, Female, Male, Male, Male,
+Female, Male, Female, Female, Male, F…
+## $ education &lt;fct&gt; 3, 3, 3, 4, 2, 5, 5, 3, 4, 5, 3, 4, 4,
+4, 3, 4, 3, 4, 4, 4, 2, 4, 0, 4, 4, 3, 2…
+## $ age &lt;int&gt; 19, 23, 20, 27, 33, 26, 30, 19, 23, 40, 23,
+34, 32, 41, 20, 24, 19, 24, 35, 46,…
+## $ ACT &lt;int&gt; 24, 35, 21, 26, 31, 28, 36, 22, 22, 35, 32,
+29, 21, 35, 27, 27, 33, 32, 28, 32,…
+## $ SATV &lt;int&gt; 500, 600, 480, 550, 600, 640, 610, 520,
+400, 730, 760, 710, 600, 780, 640, 640,…
+## $ SATQ &lt;int&gt; 500, 500, 470, 520, 550, 640, 500, 560,
+600, 800, 710, 600, 600, 725, 630, 590,…</code></pre>
+<div id="section" class="section level1">
+<h1>1.</h1>
+<pre class="r"><code>man1&lt;-manova(cbind(ACT,SATV,SATQ)~gender,data=sat.act)
+summary(man1)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## gender 1 0.0415 9.8572 3 683 2.272e-06 ***
+## Residuals 685
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>#get univariate ANOVAS from MANOVA ovject
+summary.aov(man1)</code></pre>
+<pre><code>## Response ACT :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender 1 27.8 27.800 1.1915 0.2754
+## Residuals 685 15982.2 23.332
+##
+## Response SATV :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender 1 3483 3483.2 0.2711 0.6028
+## Residuals 685 8801812 12849.4
+##
+## Response SATQ :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender 1 250668 250668 19.244 1.332e-05 ***
+## Residuals 685 8922831 13026
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## 13 observations deleted due to missingness</code></pre>
+<pre class="r"><code>#t-test
+pairwise.t.test(sat.act$SATQ, sat.act$gender,p.adj=&quot;none&quot;) </code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  sat.act$SATQ and sat.act$gender 
+## 
+##      Female 
+## Male 1.3e-05
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>#Probability of at least one type I error
+1-.95^6</code></pre>
+<pre><code>## [1] 0.2649081</code></pre>
+<pre class="r"><code>#Boneferri
+0.05/6</code></pre>
+<pre><code>## [1] 0.008333333</code></pre>
+<p><em>After performing MANOVA the p-value was 2.272e-06 which means that at least one of the variables is significant. I ran a univariate ANOVA to see which are significant and found only ‘SATQ’ to have a significant value of 1.332e-05. Therefore, for SATQ there is a difference between genders. After the post hos analysis was performed it is confirmed that there is a significant difference between male and female SATQ since the p-value,1.3e-05, is less than 0.05.I performed 6 tests: 1 MANOVA, 3 ANOVAS, and 2 t-tests. The probability of at least one Type I error is about 26.5%. Furthermore, male and females were found to differ significantly from each other in terms of SATQ after adjusting for multiple comparisons (bonferroni=0.05/6-0.008333333).Therefore, I reject the null hypothesis.</em></p>
+</div>
+<div id="section-1" class="section level1">
+<h1>2.</h1>
+<pre class="r"><code>#Randomization test
+sat.act2&lt;-sat.act%&gt;%na.omit(SATQ)
+set.seed(348)
+rand_dist&lt;-vector()
+for(i in 1:5000){
+new&lt;-data.frame(SATQ=sample(sat.act2$SATQ),gender=sat.act2$gender)
+rand_dist[i]&lt;-mean(new[new$gender==&quot;Male&quot;,]$SATQ)-
+              mean(new[new$gender==&quot;Female&quot;,]$SATQ)}
+sat.act2%&gt;%group_by(gender)%&gt;%summarize(means=mean(SATQ))%&gt;%summarize(diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `diff(means)`
+##           &lt;dbl&gt;
+## 1          39.9</code></pre>
+<pre class="r"><code>mean(rand_dist&lt; -39.87799 | rand_dist&gt;39.87799)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>hist(rand_dist,main=&quot;&quot;,ylab=&quot;&quot;); abline(v = -39.87799,col=&quot;red&quot;)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" />
+<em>The true mean difference was found to be 39.87799 and when a two tailed t-test was performed the p-value is 0. This means that there are 0 mean differences that are greater than +/-39.87799. Therefore I fail to reject the null hypothesis because it is greater than 0.05.</em></p>
+</div>
+<div id="section-2" class="section level1">
+<h1>3.</h1>
+<pre class="r"><code>#Duplicate dataset
+sat.act.linear&lt;-sat.act
+#Linear regression model
+sat.act.linear$ACT_c&lt;-sat.act$ACT-mean(sat.act$ACT)
+sat.act.linear$Age_c&lt;-sat.act$age-mean(sat.act$age)
+fit&lt;-lm(SATQ~Age_c*ACT_c,data=sat.act.linear)
+#coefficients
+summary(fit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = SATQ ~ Age_c * ACT_c, data =
+sat.act.linear)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -505.89 -47.00 7.27 62.77 278.62
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 610.242690 3.577216 170.592 &lt; 2e-16 ***
+## Age_c -1.229494 0.381953 -3.219 0.00135 **
+## ACT_c 14.321905 0.747462 19.161 &lt; 2e-16 ***
+## Age_c:ACT_c -0.002547 0.083572 -0.030 0.97570
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 93.09 on 683 degrees of freedom
+## (13 observations deleted due to missingness)
+## Multiple R-squared: 0.3548, Adjusted R-squared: 0.352
+## F-statistic: 125.2 on 3 and 683 DF, p-value: &lt; 2.2e-16</code></pre>
+<p><em>The coefficient estimate for ACT_C says that there is a 14.321905 increase in SATQ for every 1-unit increase in ACT on average. The coefficient estimate for Age_c says that there is a 1.229494 decrease in SATQ for every 1-unit increase in Age on average.The proportion of the variation in the outcome that the model explains is 0.3548/35.48%.</em></p>
+<pre class="r"><code>#Plot regression
+library(ggplot2)
+resids&lt;-fit$residuals
+fitvals&lt;-fit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, col=&quot;red&quot;)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(lmtest)
+library(sandwich)
+#Check assumptions
+bptest(fit)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit
+## BP = 2.836, df = 3, p-value = 0.4176</code></pre>
+<pre class="r"><code>#Recompute regression results
+coeftest(fit,vcov=vcovHC(fit))</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 610.2426905 3.6371925 167.7785 &lt; 2.2e-16 ***
+## Age_c -1.2294942 0.4534983 -2.7111 0.006874 **
+## ACT_c 14.3219047 0.8344612 17.1631 &lt; 2.2e-16 ***
+## Age_c:ACT_c -0.0025466 0.1012504 -0.0252 0.979941
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<p><em>Based on just the scatter plot, it seems that homoskedasticity is met because the points are clustered close together near the line. This was confirmed by a bptest which gave a p-value greater than 0.05 (0.4176) and therefore I fail to reject the null that homoskedasticity is met. Also, looking at the graph I can check assumptions of linearity and normality which look ok and seem to be met. After doing heteroskedasticity robust standard errors, the t-statistic for ‘Age_c’ increased while the t-statistic for ‘ACT_c’ decreased. The t-statistic for the interaction,‘Age_C:ACT_c’ stayed very similar from -0.030 to -0.0252. The p-values stayed almost the same with a slight increase for ‘Age_c’ and ‘Age_c:ACT_c’ while ‘ACT_c’ stayed the exact same. Overall, ‘Age_c’ and ‘ACT_c’ were found to be significant with p-values less than 0.05. This does not change after robust SEs.</em></p>
+<p>###4.</p>
+<pre class="r"><code>#Bootstrapped SEs
+samp_distn&lt;-replicate(5000,{
+  sat.act_dat&lt;-sample_frac(sat.act.linear,replace=T)
+  fit2&lt;-lm(SATQ~Age_c*ACT_c,data=sat.act_dat)
+  coef(fit2)
+})
+samp_distn%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept)     Age_c     ACT_c Age_c:ACT_c
+## 1    3.607685 0.4303278 0.8146242  0.09865832</code></pre>
+<p><em>The bootstrapped standard errors are very simliar to the original and robust SEs. However, the boostrapped SEs are a bit closer to the robust SEs. For example, the bootstrapped SE for ’Age_c&quot; is 0.4375532 , the original SE is 0.381953 and the robust SE is 0.4534983. The bootstrapped SE is greater than the original SE which means the p-value got larger as well.</em></p>
+</div>
+<div id="section-3" class="section level1">
+<h1>5.</h1>
+<pre class="r"><code>sat.act.reg&lt;-sat.act%&gt;%mutate(y=ifelse(gender==&quot;Male&quot;,1,0))%&gt;%na.omit()
+head(sat.act.reg)</code></pre>
+<pre><code>##   gender education age ACT SATV SATQ y
+## 1 Female         3  19  24  500  500 0
+## 2 Female         3  23  35  600  500 0
+## 3 Female         3  20  21  480  470 0
+## 4   Male         4  27  26  550  520 1
+## 5   Male         2  33  31  600  550 1
+## 6   Male         5  26  28  640  640 1</code></pre>
+<pre class="r"><code>#Perform logistic regression
+fit3&lt;-glm(y~SATQ+ACT,data=sat.act.reg,family=&quot;binomial&quot;)
+exp(coef(fit3))</code></pre>
+<pre><code>## (Intercept)        SATQ         ACT 
+##   0.1310714   1.0042733   0.9593179</code></pre>
+<p><em>Every 1-unit increase in ACT multiplies odds of the subject being male by 0.9593179. Every 1-unit increase in SATQ multiples odds of the subject being male by 1.0042733.</em></p>
+<pre class="r"><code>#confusion matrix
+probs&lt;-predict(fit3,type=&quot;response&quot;)
+preds&lt;-ifelse(probs&gt;.5,1,0)
+table(prediction=preds,truth=sat.act.reg$y)%&gt;%addmargins()</code></pre>
+<pre><code>##           truth
+## prediction   0   1 Sum
+##        0   434 230 664
+##        1     8  15  23
+##        Sum 442 245 687</code></pre>
+<pre class="r"><code>#Accuracy
+(434+15)/687</code></pre>
+<pre><code>## [1] 0.6535662</code></pre>
+<pre class="r"><code>#Sensitivity (TPR)
+434/664</code></pre>
+<pre><code>## [1] 0.6536145</code></pre>
+<pre class="r"><code>#Specificity (TNR)
+(15/23)</code></pre>
+<pre><code>## [1] 0.6521739</code></pre>
+<pre class="r"><code>#Recall (PPV)
+434/442</code></pre>
+<pre><code>## [1] 0.9819005</code></pre>
+<p><em>The accuracy is 0.6535662, sensitivity is 0.6536145, specificity is 0.6521739, and recall is 0.9819005. The accuracy is decent as it is not that high of number meaning the proportion of correctly classified cases is not too high. Specificity and sensitivity are in the same range while recall is high.</em></p>
+<pre class="r"><code>library(plotROC)
+#Plot density of logit by binary
+sat.act.reg$logit&lt;-predict(fit3,type=&quot;link&quot;)
+sat.act.reg%&gt;%ggplot()+geom_density(aes(logit,color=gender,fill=gender),alpha=.4)+xlab(&quot;logit(logodds)&quot;)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#ROC curve
+ROCplot&lt;-ggplot(sat.act.reg)+geom_roc(aes(d=sat.act.reg$y,m=probs),n.cuts=0)
+ROCplot    </code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-10-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Calculate AUC
+calc_auc(ROCplot) </code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.6172546</code></pre>
+<p><em>The AUC is 0.6172546 which is not bad but it is also not that good.</em></p>
+<pre class="r"><code>library(glmnet)
+class_diag&lt;-function(probs,truth){
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1
+  tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  prediction&lt;-ifelse(probs&gt;.5,1,0)
+  acc=mean(truth==prediction)
+  sens=mean(prediction[truth==1]==1)
+  spec=mean(prediction[truth==0]==0)
+  ppv=mean(truth[prediction==1]==1)
+  #CALCULATE EXACT AUC
+  ord&lt;-order(probs, decreasing=TRUE)
+  probs &lt;- probs[ord]; truth &lt;- truth[ord]
+  TPR=cumsum(truth)/max(1,sum(truth))
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  n &lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+
+#Perform 10-fold CV
+set.seed(1234)
+k=10 
+data&lt;-sat.act.reg[sample(nrow(sat.act.reg)),] 
+folds&lt;-cut(seq(1:nrow(sat.act.reg)),breaks=k,labels=F) 
+diags&lt;-NULL
+for(i in 1:k){
+  
+  train&lt;-data[folds!=i,]
+  test&lt;-data[folds==i,]
+  truth&lt;-test$y
+  
+  probs&lt;-predict(fit3,newdata = test,type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+
+#Average out-of-sample Accuracy, Sensitivity and Recall.  
+summarize_all(diags,mean)</code></pre>
+<pre><code>##         acc       sens      spec ppv       auc
+## 1 0.6537937 0.06384318 0.9814553 NaN 0.6090991</code></pre>
+<p><em>The average out-of-sample accuracy is 0.6537937, sensitivity is 0.06529012 and recall is 0.6333333. Compared to the previous accuracy, sensitivity and recall the average out-of-sample recall decreased greatly from 0.9819005 to 0.6333333. Accuracy stayed nearly the same while specificity increased by about 0.3.</em></p>
+</div>
+<div id="section-4" class="section level1">
+<h1>6.</h1>
+<pre class="r"><code>sat.act2&lt;-sat.act%&gt;%na.omit(SATQ)
+set.seed(1234)
+y&lt;-as.matrix(sat.act2$gender)
+x&lt;-model.matrix(gender~.,data=sat.act2)[,-1]
+x&lt;-scale(x)
+cv&lt;-cv.glmnet(x,y,family=&quot;binomial&quot;)
+lasso&lt;-glmnet(x,y,family=&quot;binomial&quot;,lambda=cv$lambda.1se)
+coef(lasso)</code></pre>
+<pre><code>## 10 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                      s0
+## (Intercept) -0.59454512
+## education1   .         
+## education2   0.02660569
+## education3  -0.03029963
+## education4   .         
+## education5   .         
+## age          .         
+## ACT          .         
+## SATV         .         
+## SATQ         0.16984226</code></pre>
+<p><em>The variables retained are education 2,3 and SATQ since they are found to be nonzero coefficients.</em></p>
+<pre class="r"><code>set.seed(1234)
+ k=10
+ data &lt;- sat.act2%&gt;%mutate(Education2=ifelse(education==&quot;2&quot;,1,0))%&gt;%mutate(Education3=ifelse(education==&quot;3&quot;,1,0))%&gt;%select(gender, Education2, Education3,SATQ)%&gt;%sample_frac
+folds&lt;-cut(seq(1:nrow(sat.act2)),breaks=k,labels=F) 
+diags&lt;-NULL
+for(i in 1:k){
+train&lt;-data[folds!=i,]
+ test&lt;-data[folds==i,]
+ truth&lt;-test$gender
+ fit4&lt;-glm(gender~Education2+ Education3+SATQ,data=train,family=&quot;binomial&quot;)
+ probs&lt;-predict(fit4,newdata=test,type=&quot;response&quot;)
+ diags&lt;-rbind(diags,class_diag(probs,truth))
+ }
+ summarize_all(diags,mean)</code></pre>
+<pre><code>##        acc      sens      spec       ppv       auc
+## 1 0.649318 0.1148328 0.9462906 0.5466667 0.6176661</code></pre>
+<p><em>The auc is 0.6178899 which is very similar to the logistic regression from part 5 which was 0.6172546. Its accuracy is 0.6508312 which is also very similar to the logistic regression from before which was 0.653566.</em></p>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

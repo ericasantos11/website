@@ -1,0 +1,216 @@
+---
+title: 'Project 1: Exploratory Data Analysis'
+author: "SDS348"
+date: ''
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    toc: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+```{R}
+library(tidyverse)
+library(fivethirtyeight)
+glimpse(college_all_ages)
+#?college_all_ages
+glimpse(college_recent_grads)
+#?college_recent_grads
+```
+I found the data sets 'college_all_ages' and 'college_recent_grads' in packages installed in R.They were in the fivethirtyeight package.I found these variables to be interesting because they included data from recent graduates but also data from all college ages. I liked that it included data such as ranks, employment and unemployement for different majors. Since I am a college student I was interested in this data becauese of all the different information on different majors and the differences between those in college and those who are recent graduates which is why I eventually chose it. 
+
+   Both datasets have 173 rows representing different majors with different variables. Just looking at the data I predict that the number of graduates employed and median earning would increase the higher the rank is (1 being the highest/best). I also predict the data for employment rate and unemployment to be different between the two data sets.
+   
+The column contents for'college_all_ages' are as follows: 
+
+**major_code**:Major code, FO1DP in ACS PUMS
+
+**major**:Major description
+
+**major_category**:Category of major from Carnevale et al
+
+**total**:Total number of people with major
+
+**employed**:Number employed (ESR == 1 or 2)
+
+**employed_fulltime_yearround**:Employed at least 50 weeks (WKW == 1) and at least 35 hours (WKHP >= 35)
+
+**unemployed**:Number unemployed (ESR == 3)
+
+**unemployment_rate**:Unemployed / (Unemployed + Employed)
+
+**p25th**:25th percentile of earnings
+
+**median**:Median earnings of full-time, year-round workers
+
+**p75th**:75th percentile of earnings
+
+
+The column contents for 'college_recent_grads' are as follows: 
+
+**rank**:Rank by median earnings
+
+**major_code**:Major code, FO1DP in ACS PUMS
+
+**major**:Major description
+
+**major_category**:Category of major from Carnevale et al
+
+**total**:Total number of people with major
+
+**sample_size**:Sample size (unweighted) of full-time, year-round ONLY (used for earnings)
+
+**men**:Men with major
+
+**women**:Women with major
+
+**sharewomen**:Proportion women
+
+**employed**:Number employed (ESR == 1 or 2)
+
+**employed_fulltime**:Employed 35 hours or more
+
+**employed_parttime**:Employed less than 35 hours
+
+**employed_fulltime_yearround**:Employed at least 50 weeks (WKW == 1) and at least 35 hours (WKHP >= 35)
+
+**unemployed**:Number unemployed (ESR == 3)
+
+**unemployment_rate**:Unemployed / (Unemployed + Employed)
+
+**p25th**:25th percentile of earnings
+
+**median**:Median earnings of full-time, year-round workers
+
+**p75th**:75th percentile of earnings
+
+**college_jobs**:Number with job requiring a college degree
+
+**non_college_jobs**:Number with job not requiring a college degree
+
+**low_wage_jobs**:Number in low-wage service jobs
+
+I renamed 'college_all_ages' to 'college_all_ages2' because I included "college_all_ages" at the end of its numeric columns. I did this to be able to distinguish between similar named columns in the college_recent_grads dataset. 
+```{R}
+college_all_ages2 <-college_all_ages%>%
+rename(total.college_all_ages=total,employed.college_all_ages=employed,
+employed_fulltime_yearround.college_all_ages=
+  employed_fulltime_yearround, 
+unemployed.college_all_ages=
+  unemployed, unemployment_rate.college_all_ages=
+unemployment_rate, 
+p25th.college_all_ages=p25th, 
+median.college_all_ages=median, 
+p75th.college_all_ages=p75th)
+```
+Both datasets are already tidy so I will demonstrate my ability to perform pivot_wider by untidying 'college_recent_grads'.
+
+```{R}
+#Tidying: Rearranging Wide/Long
+pivotwider<-college_recent_grads%>%
+  pivot_wider(names_from="major_category", values_from ="total")
+glimpse(pivotwider)
+```
+To untidy this dataset I got a categorical column "major_category" and separated it by each category where its value was from the "total" column. This made the dataset wider by making a column for each major category which was orginally all in one column.
+
+```{R}
+#Joining/Merging
+leftjoin<-left_join(college_recent_grads, college_all_ages2)
+glimpse(leftjoin)
+```
+I performed a left join on the two datasets using the left_join() function. I used left_join because I wanted to join columns they had in common which were "major_code", "major" and "major_category". Doing this join also kept columns that they did not have in common which I wanted such as "rank". I did this in order to maintain all data from both datasets to make future comparisons if needed. Since they had the same categorical variables they matched and nothing needed to be dropped. The newly made joined dataset 'leftjoin' and each of the datasets have 173 rows since all categorical variables were able to be maintained. The merged datset has more columns because it has columns from both orginal datasets.
+```{R}
+#Wrangling
+#I used all six core dplyr functions by generating two different variables.
+wrangle1<-leftjoin%>%filter(rank<=100)%>%
+  mutate(avgemployed.recentgrads=total/employed)%>%
+  select(rank,major, major_category,avgemployed.recentgrads)
+glimpse(wrangle1)
+wrangle2<-leftjoin%>%group_by(major_category)%>%
+  summarize(mean_total=mean(total))%>%
+  na.omit()%>%arrange(mean_total) 
+
+glimpse(wrangle2)
+```
+For wrangle1: by performing these functions I was able to create a column of the average of employed recent grads for the top 100 in rank. This helped me condense my focus into the first 100 and was easier for me to analyze the data.Petroleum Engineering which is ranked 1 has a 1.183704 average of employed recent gradutes while Ethnic and Civilization Studies, ranked 100, has a 1.266596 average which is larger. This surprised me as I thought the average employed of recent graduates for the major ranked 1 would be the highest. I used mutate() to create this the new variable "avg.employed.recentgrads" which is a function of two other variables (total and employed).
+
+For wrangle2:I grouped by major_category to limit the data and I found the mean total for each different category. I also used arrange() to help me compare the highest vs the lowest mean totals for each major. This showed me that Arts had the highest mean total while Social Science had the least.
+```{R}
+#Summary Statistics
+summarystatistics1<-leftjoin%>%group_by(major_category)%>%
+  summarize(min_total=min(total, na.rm=T),max_total=max(total,na.rm=T),
+sd_total=sd(total, na.rm=T), n=n(),se_tot=sd_total/sqrt(n))
+glimpse(summarystatistics1)
+
+summarystatistics2<-leftjoin%>%
+group_by(major_category,major)%>%
+summarize(median_employed=median(employed,na.rm=T))
+glimpse(summarystatistics2)
+
+summarystatistics3<-leftjoin%>%summarize_if(is.numeric,list(mean=mean,median=median, sd=sd),na.rm=T)%>%
+select(-rank_mean, -major_code_mean, 
+ -rank_median,-major_code_median, -rank_sd, -major_code_sd)
+glimpse(summarystatistics3)
+
+summarystatistics4<-leftjoin%>%summarize_if(is.character,n_distinct)
+glimpse(summarystatistics4)
+matrix<-leftjoin%>%na.omit()%>%select_if(is.numeric)%>%
+select(-rank,-major_code)
+glimpse(matrix)
+```
+I used ten different summary statistics in order to analyze the data. I used different ones with four different variables that I created so that it could remain organized. For 'summarystatistics1'I focused on major_category and used several summary statistics to analyze the totals of each category. I was able to see that Engineering had the most unique majors associated with it. However, it still did not have the greatest mean total which was beat by Business. In 'summarystatistics2', I could see that the mean employed varied greatly even among the same major_category. I thought they would be more similar among this group.
+
+In 'summarystatistics3', I was able to look at summary statistics for all numeric categories. I noticed that the mean of women for recent graduates was greater than the mean of men. Also, the median for unemployment was higher for 'college_all_ages' than 'college_recent_grads'. In 'summarystatistics4', I computed the number of distinct major_categories and majors just to have that in case it is needed. I then made a correlation matrix of the numeric variables to look at some correlations. An interesting one was that unemployment rate for recent grads did not have a large correlation with each gender. 
+```{R}
+#Visualizing
+leftjoin%>%select(women,men, unemployment_rate, unemployment_rate.college_all_ages, 
+employed_fulltime_yearround,
+employed_fulltime_yearround.college_all_ages)%>%cor%>%
+as.data.frame%>%rownames_to_column%>%pivot_longer(-1)%>%
+ggplot(aes(rowname,name,fill=value))+geom_tile()+
+geom_text(aes(label=round(value,2)))+xlab("")+ylab("")+
+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+I was able to visualize the correlation of the numeric variables with a heatmap.I limited to some numeric variables only so that I could analyze what interests me and make the heatmap easier to read and understand. I was able to visualize what I analyzed earlier in the correlation matrix.In addition I analyzed that fulltime yearround employmen had a high correlation (0.94) between recent graduates and college students of all ages.
+
+```{R}
+library(ggplot2)
+ggplot(leftjoin, aes(unemployed.college_all_ages, 
+employed.college_all_ages))+geom_point(aes(color=major_category)) +scale_x_log10()+scale_y_log10() +
+ggtitle("Employed vs Unemployed for College of All Ages")
+                                                                                                  
+```
+With this graph I was able to compared employed vs unemployed college students of all ages. Business had high employment and unemployment while categories such as Health stayed in the middle of both numeric variables. At the low end I see Education.
+```{R}
+test<-leftjoin%>%mutate(rank_cat=case_when(rank<54~"high", 54<=rank & rank<=108~"med", rank>108~"low"))
+ggplot(test,aes(x=major_category,y=women,fill=rank_cat))+
+geom_bar(stat="summary", fun.y="mean", position="dodge")+
+coord_flip() +scale_fill_manual("legend", values=c("high"="pink", "med"="purple", "low"="light blue")) +
+ggtitle("Women in Different Major Categories") + 
+xlab("Category of Major") + ylab("Number of Women")
+```
+I really like this graph because I was interested in seeing how the number of women compares in each major category. Before I did this, I knew I wanted to add in rank as well so I divide the ranks (1-173) into high medium and low so I could make that comparison as well. There are a lot of women in Health which has the majority of high ranked majors. There are also a lot of women in Arts, Communications & Journalism and Business which have many medium ranked majors.Psychology & Social Work seem to have the most low ranked majors but does not have a low amount of women in this category. Agriculture & Natural Resources show the lowest amount of women in this category.
+```{R}
+clust_dat<-leftjoin%>%dplyr::select(p25th,p75th)
+kmeans1<-clust_dat%>%kmeans(3)
+kmeansclust<-clust_dat%>%
+mutate(cluster=as.factor(kmeans1$cluster))
+kmeansclust%>%ggplot(aes(p25th,p75th,color=cluster))+geom_point()
+```
+Cluster 1 has the greatest amount of points which are low numbers for recent graduates in the p25th percentile of earnings and 75th percentile. There are less in cluster 3 which are large numbers for these variables.Also, cluster 3 is the most spread apart. This makes sense because you expect less people in general to be in high percentiles. Kmeans is a great way to seperate data into distinct groups.
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

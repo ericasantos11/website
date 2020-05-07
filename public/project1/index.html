@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Erica Santos" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 1: Exploratory Data Analysis</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project1/">Project 1: Exploratory Data Analysis</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<pre class="r"><code>library(tidyverse)
+library(fivethirtyeight)
+glimpse(college_all_ages)</code></pre>
+<pre><code>## Observations: 173
+## Variables: 11
+## $ major_code                  &lt;int&gt; 1100, 1101, 1102, 1103, 1104, 1105, 1106,…
+## $ major                       &lt;chr&gt; &quot;General Agriculture&quot;, &quot;Agriculture Produ…
+## $ major_category              &lt;chr&gt; &quot;Agriculture &amp; Natural Resources&quot;, &quot;Agric…
+## $ total                       &lt;int&gt; 128148, 95326, 33955, 103549, 24280, 7940…
+## $ employed                    &lt;int&gt; 90245, 76865, 26321, 81177, 17281, 63043,…
+## $ employed_fulltime_yearround &lt;int&gt; 74078, 64240, 22810, 64937, 12722, 51077,…
+## $ unemployed                  &lt;int&gt; 2423, 2266, 821, 3619, 894, 2070, 264, 26…
+## $ unemployment_rate           &lt;dbl&gt; 0.02614711, 0.02863606, 0.03024832, 0.042…
+## $ p25th                       &lt;dbl&gt; 34000, 36000, 40000, 30000, 38500, 35000,…
+## $ median                      &lt;dbl&gt; 50000, 54000, 63000, 46000, 62000, 50000,…
+## $ p75th                       &lt;dbl&gt; 80000, 80000, 98000, 72000, 90000, 75000,…</code></pre>
+<pre class="r"><code>#?college_all_ages
+glimpse(college_recent_grads)</code></pre>
+<pre><code>## Observations: 173
+## Variables: 21
+## $ rank                        &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13…
+## $ major_code                  &lt;int&gt; 2419, 2416, 2415, 2417, 2405, 2418, 6202,…
+## $ major                       &lt;chr&gt; &quot;Petroleum Engineering&quot;, &quot;Mining And Mine…
+## $ major_category              &lt;chr&gt; &quot;Engineering&quot;, &quot;Engineering&quot;, &quot;Engineerin…
+## $ total                       &lt;int&gt; 2339, 756, 856, 1258, 32260, 2573, 3777, …
+## $ sample_size                 &lt;int&gt; 36, 7, 3, 16, 289, 17, 51, 10, 1029, 631,…
+## $ men                         &lt;int&gt; 2057, 679, 725, 1123, 21239, 2200, 2110, …
+## $ women                       &lt;int&gt; 282, 77, 131, 135, 11021, 373, 1667, 960,…
+## $ sharewomen                  &lt;dbl&gt; 0.1205643, 0.1018519, 0.1530374, 0.107313…
+## $ employed                    &lt;int&gt; 1976, 640, 648, 758, 25694, 1857, 2912, 1…
+## $ employed_fulltime           &lt;int&gt; 1849, 556, 558, 1069, 23170, 2038, 2924, …
+## $ employed_parttime           &lt;int&gt; 270, 170, 133, 150, 5180, 264, 296, 553, …
+## $ employed_fulltime_yearround &lt;int&gt; 1207, 388, 340, 692, 16697, 1449, 2482, 8…
+## $ unemployed                  &lt;int&gt; 37, 85, 16, 40, 1672, 400, 308, 33, 4650,…
+## $ unemployment_rate           &lt;dbl&gt; 0.018380527, 0.117241379, 0.024096386, 0.…
+## $ p25th                       &lt;dbl&gt; 95000, 55000, 50000, 43000, 50000, 50000,…
+## $ median                      &lt;dbl&gt; 110000, 75000, 73000, 70000, 65000, 65000…
+## $ p75th                       &lt;dbl&gt; 125000, 90000, 105000, 80000, 75000, 1020…
+## $ college_jobs                &lt;int&gt; 1534, 350, 456, 529, 18314, 1142, 1768, 9…
+## $ non_college_jobs            &lt;int&gt; 364, 257, 176, 102, 4440, 657, 314, 500, …
+## $ low_wage_jobs               &lt;int&gt; 193, 50, 0, 0, 972, 244, 259, 220, 3253, …</code></pre>
+<pre class="r"><code>#?college_recent_grads</code></pre>
+<p>I found the data sets ‘college_all_ages’ and ‘college_recent_grads’ in packages installed in R.They were in the fivethirtyeight package.I found these variables to be interesting because they included data from recent graduates but also data from all college ages. I liked that it included data such as ranks, employment and unemployement for different majors. Since I am a college student I was interested in this data becauese of all the different information on different majors and the differences between those in college and those who are recent graduates which is why I eventually chose it.</p>
+<p>Both datasets have 173 rows representing different majors with different variables. Just looking at the data I predict that the number of graduates employed and median earning would increase the higher the rank is (1 being the highest/best). I also predict the data for employment rate and unemployment to be different between the two data sets.</p>
+<p>The column contents for’college_all_ages’ are as follows:</p>
+<p><strong>major_code</strong>:Major code, FO1DP in ACS PUMS</p>
+<p><strong>major</strong>:Major description</p>
+<p><strong>major_category</strong>:Category of major from Carnevale et al</p>
+<p><strong>total</strong>:Total number of people with major</p>
+<p><strong>employed</strong>:Number employed (ESR == 1 or 2)</p>
+<p><strong>employed_fulltime_yearround</strong>:Employed at least 50 weeks (WKW == 1) and at least 35 hours (WKHP &gt;= 35)</p>
+<p><strong>unemployed</strong>:Number unemployed (ESR == 3)</p>
+<p><strong>unemployment_rate</strong>:Unemployed / (Unemployed + Employed)</p>
+<p><strong>p25th</strong>:25th percentile of earnings</p>
+<p><strong>median</strong>:Median earnings of full-time, year-round workers</p>
+<p><strong>p75th</strong>:75th percentile of earnings</p>
+<p>The column contents for ‘college_recent_grads’ are as follows:</p>
+<p><strong>rank</strong>:Rank by median earnings</p>
+<p><strong>major_code</strong>:Major code, FO1DP in ACS PUMS</p>
+<p><strong>major</strong>:Major description</p>
+<p><strong>major_category</strong>:Category of major from Carnevale et al</p>
+<p><strong>total</strong>:Total number of people with major</p>
+<p><strong>sample_size</strong>:Sample size (unweighted) of full-time, year-round ONLY (used for earnings)</p>
+<p><strong>men</strong>:Men with major</p>
+<p><strong>women</strong>:Women with major</p>
+<p><strong>sharewomen</strong>:Proportion women</p>
+<p><strong>employed</strong>:Number employed (ESR == 1 or 2)</p>
+<p><strong>employed_fulltime</strong>:Employed 35 hours or more</p>
+<p><strong>employed_parttime</strong>:Employed less than 35 hours</p>
+<p><strong>employed_fulltime_yearround</strong>:Employed at least 50 weeks (WKW == 1) and at least 35 hours (WKHP &gt;= 35)</p>
+<p><strong>unemployed</strong>:Number unemployed (ESR == 3)</p>
+<p><strong>unemployment_rate</strong>:Unemployed / (Unemployed + Employed)</p>
+<p><strong>p25th</strong>:25th percentile of earnings</p>
+<p><strong>median</strong>:Median earnings of full-time, year-round workers</p>
+<p><strong>p75th</strong>:75th percentile of earnings</p>
+<p><strong>college_jobs</strong>:Number with job requiring a college degree</p>
+<p><strong>non_college_jobs</strong>:Number with job not requiring a college degree</p>
+<p><strong>low_wage_jobs</strong>:Number in low-wage service jobs</p>
+<p>I renamed ‘college_all_ages’ to ‘college_all_ages2’ because I included “college_all_ages” at the end of its numeric columns. I did this to be able to distinguish between similar named columns in the college_recent_grads dataset.</p>
+<pre class="r"><code>college_all_ages2 &lt;-college_all_ages%&gt;%
+rename(total.college_all_ages=total,employed.college_all_ages=employed,
+employed_fulltime_yearround.college_all_ages=
+  employed_fulltime_yearround, 
+unemployed.college_all_ages=
+  unemployed, unemployment_rate.college_all_ages=
+unemployment_rate, 
+p25th.college_all_ages=p25th, 
+median.college_all_ages=median, 
+p75th.college_all_ages=p75th)</code></pre>
+<p>Both datasets are already tidy so I will demonstrate my ability to perform pivot_wider by untidying ‘college_recent_grads’.</p>
+<pre class="r"><code>#Tidying: Rearranging Wide/Long
+pivotwider&lt;-college_recent_grads%&gt;%
+  pivot_wider(names_from=&quot;major_category&quot;, values_from =&quot;total&quot;)
+glimpse(pivotwider)</code></pre>
+<pre><code>## Observations: 173
+## Variables: 35
+## $ rank                                  &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, …
+## $ major_code                            &lt;int&gt; 2419, 2416, 2415, 2417, 2405, 2…
+## $ major                                 &lt;chr&gt; &quot;Petroleum Engineering&quot;, &quot;Minin…
+## $ sample_size                           &lt;int&gt; 36, 7, 3, 16, 289, 17, 51, 10, …
+## $ men                                   &lt;int&gt; 2057, 679, 725, 1123, 21239, 22…
+## $ women                                 &lt;int&gt; 282, 77, 131, 135, 11021, 373, …
+## $ sharewomen                            &lt;dbl&gt; 0.1205643, 0.1018519, 0.1530374…
+## $ employed                              &lt;int&gt; 1976, 640, 648, 758, 25694, 185…
+## $ employed_fulltime                     &lt;int&gt; 1849, 556, 558, 1069, 23170, 20…
+## $ employed_parttime                     &lt;int&gt; 270, 170, 133, 150, 5180, 264, …
+## $ employed_fulltime_yearround           &lt;int&gt; 1207, 388, 340, 692, 16697, 144…
+## $ unemployed                            &lt;int&gt; 37, 85, 16, 40, 1672, 400, 308,…
+## $ unemployment_rate                     &lt;dbl&gt; 0.018380527, 0.117241379, 0.024…
+## $ p25th                                 &lt;dbl&gt; 95000, 55000, 50000, 43000, 500…
+## $ median                                &lt;dbl&gt; 110000, 75000, 73000, 70000, 65…
+## $ p75th                                 &lt;dbl&gt; 125000, 90000, 105000, 80000, 7…
+## $ college_jobs                          &lt;int&gt; 1534, 350, 456, 529, 18314, 114…
+## $ non_college_jobs                      &lt;int&gt; 364, 257, 176, 102, 4440, 657, …
+## $ low_wage_jobs                         &lt;int&gt; 193, 50, 0, 0, 972, 244, 259, 2…
+## $ Engineering                           &lt;int&gt; 2339, 756, 856, 1258, 32260, 25…
+## $ Business                              &lt;int&gt; NA, NA, NA, NA, NA, NA, 3777, N…
+## $ `Physical Sciences`                   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, 179…
+## $ `Law &amp; Public Policy`                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `Computers &amp; Mathematics`             &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `Agriculture &amp; Natural Resources`     &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `Industrial Arts &amp; Consumer Services` &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ Arts                                  &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ Health                                &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `Social Science`                      &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `Biology &amp; Life Science`              &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ Education                             &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `Humanities &amp; Liberal Arts`           &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `Psychology &amp; Social Work`            &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `Communications &amp; Journalism`         &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ Interdisciplinary                     &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+<p>To untidy this dataset I got a categorical column “major_category” and separated it by each category where its value was from the “total” column. This made the dataset wider by making a column for each major category which was orginally all in one column.</p>
+<pre class="r"><code>#Joining/Merging
+leftjoin&lt;-left_join(college_recent_grads, college_all_ages2)
+glimpse(leftjoin)</code></pre>
+<pre><code>## Observations: 173
+## Variables: 29
+## $ rank                                         &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, …
+## $ major_code                                   &lt;int&gt; 2419, 2416, 2415, 2417, …
+## $ major                                        &lt;chr&gt; &quot;Petroleum Engineering&quot;,…
+## $ major_category                               &lt;chr&gt; &quot;Engineering&quot;, &quot;Engineer…
+## $ total                                        &lt;int&gt; 2339, 756, 856, 1258, 32…
+## $ sample_size                                  &lt;int&gt; 36, 7, 3, 16, 289, 17, 5…
+## $ men                                          &lt;int&gt; 2057, 679, 725, 1123, 21…
+## $ women                                        &lt;int&gt; 282, 77, 131, 135, 11021…
+## $ sharewomen                                   &lt;dbl&gt; 0.1205643, 0.1018519, 0.…
+## $ employed                                     &lt;int&gt; 1976, 640, 648, 758, 256…
+## $ employed_fulltime                            &lt;int&gt; 1849, 556, 558, 1069, 23…
+## $ employed_parttime                            &lt;int&gt; 270, 170, 133, 150, 5180…
+## $ employed_fulltime_yearround                  &lt;int&gt; 1207, 388, 340, 692, 166…
+## $ unemployed                                   &lt;int&gt; 37, 85, 16, 40, 1672, 40…
+## $ unemployment_rate                            &lt;dbl&gt; 0.018380527, 0.117241379…
+## $ p25th                                        &lt;dbl&gt; 95000, 55000, 50000, 430…
+## $ median                                       &lt;dbl&gt; 110000, 75000, 73000, 70…
+## $ p75th                                        &lt;dbl&gt; 125000, 90000, 105000, 8…
+## $ college_jobs                                 &lt;int&gt; 1534, 350, 456, 529, 183…
+## $ non_college_jobs                             &lt;int&gt; 364, 257, 176, 102, 4440…
+## $ low_wage_jobs                                &lt;int&gt; 193, 50, 0, 0, 972, 244,…
+## $ total.college_all_ages                       &lt;int&gt; 19631, 10746, 12818, 160…
+## $ employed.college_all_ages                    &lt;int&gt; 14002, 7416, 6939, 10690…
+## $ employed_fulltime_yearround.college_all_ages &lt;int&gt; 11636, 6419, 5462, 9226,…
+## $ unemployed.college_all_ages                  &lt;int&gt; 617, 366, 326, 449, 6388…
+## $ unemployment_rate.college_all_ages           &lt;dbl&gt; 0.04220535, 0.04703161, …
+## $ p25th.college_all_ages                       &lt;dbl&gt; 75000, 52000, 65000, 600…
+## $ median.college_all_ages                      &lt;dbl&gt; 125000, 92000, 96000, 97…
+## $ p75th.college_all_ages                       &lt;dbl&gt; 210000, 124000, 123000, …</code></pre>
+<p>I performed a left join on the two datasets using the left_join() function. I used left_join because I wanted to join columns they had in common which were “major_code”, “major” and “major_category”. Doing this join also kept columns that they did not have in common which I wanted such as “rank”. I did this in order to maintain all data from both datasets to make future comparisons if needed. Since they had the same categorical variables they matched and nothing needed to be dropped. The newly made joined dataset ‘leftjoin’ and each of the datasets have 173 rows since all categorical variables were able to be maintained. The merged datset has more columns because it has columns from both orginal datasets.</p>
+<pre class="r"><code>#Wrangling
+#I used all six core dplyr functions by generating two different variables.
+wrangle1&lt;-leftjoin%&gt;%filter(rank&lt;=100)%&gt;%
+  mutate(avgemployed.recentgrads=total/employed)%&gt;%
+  select(rank,major, major_category,avgemployed.recentgrads)
+glimpse(wrangle1)</code></pre>
+<pre><code>## Observations: 100
+## Variables: 4
+## $ rank                    &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14…
+## $ major                   &lt;chr&gt; &quot;Petroleum Engineering&quot;, &quot;Mining And Mineral …
+## $ major_category          &lt;chr&gt; &quot;Engineering&quot;, &quot;Engineering&quot;, &quot;Engineering&quot;, …
+## $ avgemployed.recentgrads &lt;dbl&gt; 1.183704, 1.181250, 1.320988, 1.659631, 1.255…</code></pre>
+<pre class="r"><code>wrangle2&lt;-leftjoin%&gt;%group_by(major_category)%&gt;%
+  summarize(mean_total=mean(total))%&gt;%
+  na.omit()%&gt;%arrange(mean_total) 
+
+glimpse(wrangle2)</code></pre>
+<pre><code>## Observations: 15
+## Variables: 2
+## $ major_category &lt;chr&gt; &quot;Interdisciplinary&quot;, &quot;Engineering&quot;, &quot;Physical Sciences…
+## $ mean_total     &lt;dbl&gt; 12296.00, 18537.34, 18547.90, 27182.55, 32418.71, 3282…</code></pre>
+<p>For wrangle1: by performing these functions I was able to create a column of the average of employed recent grads for the top 100 in rank. This helped me condense my focus into the first 100 and was easier for me to analyze the data.Petroleum Engineering which is ranked 1 has a 1.183704 average of employed recent gradutes while Ethnic and Civilization Studies, ranked 100, has a 1.266596 average which is larger. This surprised me as I thought the average employed of recent graduates for the major ranked 1 would be the highest. I used mutate() to create this the new variable “avg.employed.recentgrads” which is a function of two other variables (total and employed).</p>
+<p>For wrangle2:I grouped by major_category to limit the data and I found the mean total for each different category. I also used arrange() to help me compare the highest vs the lowest mean totals for each major. This showed me that Arts had the highest mean total while Social Science had the least.</p>
+<pre class="r"><code>#Summary Statistics
+summarystatistics1&lt;-leftjoin%&gt;%group_by(major_category)%&gt;%
+  summarize(min_total=min(total, na.rm=T),max_total=max(total,na.rm=T),
+sd_total=sd(total, na.rm=T), n=n(),se_tot=sd_total/sqrt(n))
+glimpse(summarystatistics1)</code></pre>
+<pre><code>## Observations: 16
+## Variables: 6
+## $ major_category &lt;chr&gt; &quot;Agriculture &amp; Natural Resources&quot;, &quot;Arts&quot;, &quot;Biology &amp; …
+## $ min_total      &lt;int&gt; 685, 3340, 1329, 3777, 52824, 609, 804, 720, 11123, 30…
+## $ max_total      &lt;int&gt; 21573, 103480, 280709, 329927, 213996, 128319, 170862,…
+## $ sd_total       &lt;dbl&gt; 7135.039, 33635.404, 72233.366, 111655.874, 77782.805,…
+## $ n              &lt;int&gt; 10, 8, 14, 13, 4, 11, 16, 29, 12, 15, 7, 1, 5, 10, 9, 9
+## $ se_tot         &lt;dbl&gt; 2256.297, 11891.911, 19305.179, 30967.767, 38891.402, …</code></pre>
+<pre class="r"><code>summarystatistics2&lt;-leftjoin%&gt;%
+group_by(major_category,major)%&gt;%
+summarize(median_employed=median(employed,na.rm=T))
+glimpse(summarystatistics2)</code></pre>
+<pre><code>## Observations: 173
+## Variables: 3
+## Groups: major_category [16]
+## $ major_category  &lt;chr&gt; &quot;Agriculture &amp; Natural Resources&quot;, &quot;Agriculture &amp; Nat…
+## $ major           &lt;chr&gt; &quot;Agricultural Economics&quot;, &quot;Agriculture Production And…
+## $ median_employed &lt;int&gt; 2174, 12323, 17112, 3149, 3007, 8884, 1290, 11797, 65…</code></pre>
+<pre class="r"><code>summarystatistics3&lt;-leftjoin%&gt;%summarize_if(is.numeric,list(mean=mean,median=median, sd=sd),na.rm=T)%&gt;%
+select(-rank_mean, -major_code_mean, 
+ -rank_median,-major_code_median, -rank_sd, -major_code_sd)
+glimpse(summarystatistics3)</code></pre>
+<pre><code>## Observations: 1
+## Variables: 75
+## $ total_mean                                          &lt;dbl&gt; 39370.08
+## $ sample_size_mean                                    &lt;dbl&gt; 356.0809
+## $ men_mean                                            &lt;dbl&gt; 16723.41
+## $ women_mean                                          &lt;dbl&gt; 22646.67
+## $ sharewomen_mean                                     &lt;dbl&gt; 0.5222234
+## $ employed_mean                                       &lt;dbl&gt; 31192.76
+## $ employed_fulltime_mean                              &lt;dbl&gt; 26029.31
+## $ employed_parttime_mean                              &lt;dbl&gt; 8832.399
+## $ employed_fulltime_yearround_mean                    &lt;dbl&gt; 19694.43
+## $ unemployed_mean                                     &lt;dbl&gt; 2416.329
+## $ unemployment_rate_mean                              &lt;dbl&gt; 0.06819083
+## $ p25th_mean                                          &lt;dbl&gt; 29501.45
+## $ median_mean                                         &lt;dbl&gt; 40151.45
+## $ p75th_mean                                          &lt;dbl&gt; 51494.22
+## $ college_jobs_mean                                   &lt;dbl&gt; 12322.64
+## $ non_college_jobs_mean                               &lt;dbl&gt; 13284.5
+## $ low_wage_jobs_mean                                  &lt;dbl&gt; 3859.017
+## $ total.college_all_ages_mean                         &lt;dbl&gt; 230256.6
+## $ employed.college_all_ages_mean                      &lt;dbl&gt; 166162
+## $ employed_fulltime_yearround.college_all_ages_mean   &lt;dbl&gt; 126307.8
+## $ unemployed.college_all_ages_mean                    &lt;dbl&gt; 9725.035
+## $ unemployment_rate.college_all_ages_mean             &lt;dbl&gt; 0.05735545
+## $ p25th.college_all_ages_mean                         &lt;dbl&gt; 38697.11
+## $ median.college_all_ages_mean                        &lt;dbl&gt; 56816.18
+## $ p75th.college_all_ages_mean                         &lt;dbl&gt; 82506.36
+## $ total_median                                        &lt;dbl&gt; 15104
+## $ sample_size_median                                  &lt;int&gt; 130
+## $ men_median                                          &lt;dbl&gt; 5434
+## $ women_median                                        &lt;dbl&gt; 8386.5
+## $ sharewomen_median                                   &lt;dbl&gt; 0.534024
+## $ employed_median                                     &lt;int&gt; 11797
+## $ employed_fulltime_median                            &lt;int&gt; 10048
+## $ employed_parttime_median                            &lt;int&gt; 3299
+## $ employed_fulltime_yearround_median                  &lt;int&gt; 7413
+## $ unemployed_median                                   &lt;int&gt; 893
+## $ unemployment_rate_median                            &lt;dbl&gt; 0.06796077
+## $ p25th_median                                        &lt;dbl&gt; 27000
+## $ median_median                                       &lt;dbl&gt; 36000
+## $ p75th_median                                        &lt;dbl&gt; 47000
+## $ college_jobs_median                                 &lt;int&gt; 4390
+## $ non_college_jobs_median                             &lt;int&gt; 4595
+## $ low_wage_jobs_median                                &lt;int&gt; 1231
+## $ total.college_all_ages_median                       &lt;int&gt; 75791
+## $ employed.college_all_ages_median                    &lt;int&gt; 56564
+## $ employed_fulltime_yearround.college_all_ages_median &lt;int&gt; 39613
+## $ unemployed.college_all_ages_median                  &lt;int&gt; 3619
+## $ unemployment_rate.college_all_ages_median           &lt;dbl&gt; 0.05471919
+## $ p25th.college_all_ages_median                       &lt;dbl&gt; 36000
+## $ median.college_all_ages_median                      &lt;dbl&gt; 53000
+## $ p75th.college_all_ages_median                       &lt;dbl&gt; 80000
+## $ total_sd                                            &lt;dbl&gt; 63483.49
+## $ sample_size_sd                                      &lt;dbl&gt; 618.361
+## $ men_sd                                              &lt;dbl&gt; 28122.43
+## $ women_sd                                            &lt;dbl&gt; 41057.33
+## $ sharewomen_sd                                       &lt;dbl&gt; 0.231205
+## $ employed_sd                                         &lt;dbl&gt; 50675
+## $ employed_fulltime_sd                                &lt;dbl&gt; 42869.66
+## $ employed_parttime_sd                                &lt;dbl&gt; 14648.18
+## $ employed_fulltime_yearround_sd                      &lt;dbl&gt; 33160.94
+## $ unemployed_sd                                       &lt;dbl&gt; 4112.803
+## $ unemployment_rate_sd                                &lt;dbl&gt; 0.03033094
+## $ p25th_sd                                            &lt;dbl&gt; 9166.005
+## $ median_sd                                           &lt;dbl&gt; 11470.18
+## $ p75th_sd                                            &lt;dbl&gt; 14906.28
+## $ college_jobs_sd                                     &lt;dbl&gt; 21299.87
+## $ non_college_jobs_sd                                 &lt;dbl&gt; 23789.66
+## $ low_wage_jobs_sd                                    &lt;dbl&gt; 6944.999
+## $ total.college_all_ages_sd                           &lt;dbl&gt; 422068.5
+## $ employed.college_all_ages_sd                        &lt;dbl&gt; 307324.4
+## $ employed_fulltime_yearround.college_all_ages_sd     &lt;dbl&gt; 242425.4
+## $ unemployed.college_all_ages_sd                      &lt;dbl&gt; 18022.04
+## $ unemployment_rate.college_all_ages_sd               &lt;dbl&gt; 0.0191771
+## $ p25th.college_all_ages_sd                           &lt;dbl&gt; 9414.525
+## $ median.college_all_ages_sd                          &lt;dbl&gt; 14706.23
+## $ p75th.college_all_ages_sd                           &lt;dbl&gt; 20805.33</code></pre>
+<pre class="r"><code>summarystatistics4&lt;-leftjoin%&gt;%summarize_if(is.character,n_distinct)
+glimpse(summarystatistics4)</code></pre>
+<pre><code>## Observations: 1
+## Variables: 2
+## $ major          &lt;int&gt; 173
+## $ major_category &lt;int&gt; 16</code></pre>
+<pre class="r"><code>matrix&lt;-leftjoin%&gt;%na.omit()%&gt;%select_if(is.numeric)%&gt;%
+select(-rank,-major_code)
+glimpse(matrix)</code></pre>
+<pre><code>## Observations: 172
+## Variables: 25
+## $ total                                        &lt;int&gt; 2339, 756, 856, 1258, 32…
+## $ sample_size                                  &lt;int&gt; 36, 7, 3, 16, 289, 17, 5…
+## $ men                                          &lt;int&gt; 2057, 679, 725, 1123, 21…
+## $ women                                        &lt;int&gt; 282, 77, 131, 135, 11021…
+## $ sharewomen                                   &lt;dbl&gt; 0.12056434, 0.10185185, …
+## $ employed                                     &lt;int&gt; 1976, 640, 648, 758, 256…
+## $ employed_fulltime                            &lt;int&gt; 1849, 556, 558, 1069, 23…
+## $ employed_parttime                            &lt;int&gt; 270, 170, 133, 150, 5180…
+## $ employed_fulltime_yearround                  &lt;int&gt; 1207, 388, 340, 692, 166…
+## $ unemployed                                   &lt;int&gt; 37, 85, 16, 40, 1672, 40…
+## $ unemployment_rate                            &lt;dbl&gt; 0.018380527, 0.117241379…
+## $ p25th                                        &lt;dbl&gt; 95000, 55000, 50000, 430…
+## $ median                                       &lt;dbl&gt; 110000, 75000, 73000, 70…
+## $ p75th                                        &lt;dbl&gt; 125000, 90000, 105000, 8…
+## $ college_jobs                                 &lt;int&gt; 1534, 350, 456, 529, 183…
+## $ non_college_jobs                             &lt;int&gt; 364, 257, 176, 102, 4440…
+## $ low_wage_jobs                                &lt;int&gt; 193, 50, 0, 0, 972, 244,…
+## $ total.college_all_ages                       &lt;int&gt; 19631, 10746, 12818, 160…
+## $ employed.college_all_ages                    &lt;int&gt; 14002, 7416, 6939, 10690…
+## $ employed_fulltime_yearround.college_all_ages &lt;int&gt; 11636, 6419, 5462, 9226,…
+## $ unemployed.college_all_ages                  &lt;int&gt; 617, 366, 326, 449, 6388…
+## $ unemployment_rate.college_all_ages           &lt;dbl&gt; 0.04220535, 0.04703161, …
+## $ p25th.college_all_ages                       &lt;dbl&gt; 75000, 52000, 65000, 600…
+## $ median.college_all_ages                      &lt;dbl&gt; 125000, 92000, 96000, 97…
+## $ p75th.college_all_ages                       &lt;dbl&gt; 210000, 124000, 123000, …</code></pre>
+<p>I used ten different summary statistics in order to analyze the data. I used different ones with four different variables that I created so that it could remain organized. For ‘summarystatistics1’I focused on major_category and used several summary statistics to analyze the totals of each category. I was able to see that Engineering had the most unique majors associated with it. However, it still did not have the greatest mean total which was beat by Business. In ’summarystatistics2’, I could see that the mean employed varied greatly even among the same major_category. I thought they would be more similar among this group.</p>
+<p>In ‘summarystatistics3’, I was able to look at summary statistics for all numeric categories. I noticed that the mean of women for recent graduates was greater than the mean of men. Also, the median for unemployment was higher for ‘college_all_ages’ than ‘college_recent_grads’. In ‘summarystatistics4’, I computed the number of distinct major_categories and majors just to have that in case it is needed. I then made a correlation matrix of the numeric variables to look at some correlations. An interesting one was that unemployment rate for recent grads did not have a large correlation with each gender.</p>
+<pre class="r"><code>#Visualizing
+leftjoin%&gt;%select(women,men, unemployment_rate, unemployment_rate.college_all_ages, 
+employed_fulltime_yearround,
+employed_fulltime_yearround.college_all_ages)%&gt;%cor%&gt;%
+as.data.frame%&gt;%rownames_to_column%&gt;%pivot_longer(-1)%&gt;%
+ggplot(aes(rowname,name,fill=value))+geom_tile()+
+geom_text(aes(label=round(value,2)))+xlab(&quot;&quot;)+ylab(&quot;&quot;)+
+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
+I was able to visualize the correlation of the numeric variables with a heatmap.I limited to some numeric variables only so that I could analyze what interests me and make the heatmap easier to read and understand. I was able to visualize what I analyzed earlier in the correlation matrix.In addition I analyzed that fulltime yearround employmen had a high correlation (0.94) between recent graduates and college students of all ages.</p>
+<pre class="r"><code>library(ggplot2)
+ggplot(leftjoin, aes(unemployed.college_all_ages, 
+employed.college_all_ages))+geom_point(aes(color=major_category)) +scale_x_log10()+scale_y_log10() +
+ggtitle(&quot;Employed vs Unemployed for College of All Ages&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
+With this graph I was able to compared employed vs unemployed college students of all ages. Business had high employment and unemployment while categories such as Health stayed in the middle of both numeric variables. At the low end I see Education.</p>
+<pre class="r"><code>test&lt;-leftjoin%&gt;%mutate(rank_cat=case_when(rank&lt;54~&quot;high&quot;, 54&lt;=rank &amp; rank&lt;=108~&quot;med&quot;, rank&gt;108~&quot;low&quot;))
+ggplot(test,aes(x=major_category,y=women,fill=rank_cat))+
+geom_bar(stat=&quot;summary&quot;, fun.y=&quot;mean&quot;, position=&quot;dodge&quot;)+
+coord_flip() +scale_fill_manual(&quot;legend&quot;, values=c(&quot;high&quot;=&quot;pink&quot;, &quot;med&quot;=&quot;purple&quot;, &quot;low&quot;=&quot;light blue&quot;)) +
+ggtitle(&quot;Women in Different Major Categories&quot;) + 
+xlab(&quot;Category of Major&quot;) + ylab(&quot;Number of Women&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" />
+I really like this graph because I was interested in seeing how the number of women compares in each major category. Before I did this, I knew I wanted to add in rank as well so I divide the ranks (1-173) into high medium and low so I could make that comparison as well. There are a lot of women in Health which has the majority of high ranked majors. There are also a lot of women in Arts, Communications &amp; Journalism and Business which have many medium ranked majors.Psychology &amp; Social Work seem to have the most low ranked majors but does not have a low amount of women in this category. Agriculture &amp; Natural Resources show the lowest amount of women in this category.</p>
+<pre class="r"><code>clust_dat&lt;-leftjoin%&gt;%dplyr::select(p25th,p75th)
+kmeans1&lt;-clust_dat%&gt;%kmeans(3)
+kmeansclust&lt;-clust_dat%&gt;%
+mutate(cluster=as.factor(kmeans1$cluster))
+kmeansclust%&gt;%ggplot(aes(p25th,p75th,color=cluster))+geom_point()</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" />
+Cluster 1 has the greatest amount of points which are low numbers for recent graduates in the p25th percentile of earnings and 75th percentile. There are less in cluster 3 which are large numbers for these variables.Also, cluster 3 is the most spread apart. This makes sense because you expect less people in general to be in high percentiles. Kmeans is a great way to seperate data into distinct groups.</p>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

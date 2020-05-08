@@ -72,7 +72,16 @@
               
 
 
-
+<p>Python is an awesome programming language that can be used for so many things. Reticulate is a package that can be used to let R and Python play together. In this case I am using this feature to share my graduation pride! The first picture is me on my first day of school in 2016. The second is me on my last day of school in 2020. It is now four year laters and I have learned so much…including how to make my own website!!</p>
+<pre class="r"><code>library(reticulate)
+UT&lt;- &quot;I am a 2020 graduate.&quot;</code></pre>
+<pre class="python"><code>UT = &quot;Hook &#39;em&quot;
+print (r.UT,UT)</code></pre>
+<pre><code>## (&#39;I am a 2020 graduate.&#39;, &quot;Hook &#39;em&quot;)</code></pre>
+<pre class="r"><code>cat(c(UT,py$UT))</code></pre>
+<pre><code>## I am a 2020 graduate. Hook &#39;em</code></pre>
+<p><img src="/blog/2020-05-08-python-and-r_files/IMG_3996.jpg" alt="First Day of School" />
+<img src="/blog/2020-05-08-python-and-r_files/IMG_7206.JPG" alt="Last Day of School" /></p>
 
               <hr>
               <div class="related-posts">
